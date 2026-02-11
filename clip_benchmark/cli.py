@@ -10,6 +10,9 @@ from itertools import product
 
 import torch
 from torchvision.transforms import Compose
+from open_clip.transform import MaybeConvertMode
+from torchvision.transforms.v2 import ToTensor
+
 
 from clip_benchmark.datasets.builder import (build_dataset, dataset_collection,
                                              get_dataset_collate_fn,
