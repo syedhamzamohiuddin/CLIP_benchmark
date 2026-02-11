@@ -79,8 +79,14 @@ def evaluate(model, dataloader, tokenizer,  device, amp=True, recall_k_list=[5])
         # so we can easily compute that using the actual recall, by checking whether there is at least one true positive,
         # which would be the case if the recall is greater than 0. One we compute the recal for each image (or text), we average
         # it over the dataset.
-        metrics[f"image_retrieval_recall@{recall_k}"] = (batchify(recall_at_k, scores, positive_pairs, batch_size, device, k=recall_k)>0).float().mean().item()
-        metrics[f"text_retrieval_recall@{recall_k}"] = (batchify(recall_at_k, scores.T, positive_pairs.T, batch_size, device, k=recall_k)>0).float().mean().item()
+
+        batched_image_retrieval_recall = batchify(recall_at_k, scores, positive_pairs, batch_size, device, k=recall_k)
+        batched_text_retrieval_recall = batchify(recall_at_k, scores.T, positive_pairs.T, batch_size, device, k=recall_k)
+
+        metrics[f"fractional_image_retrieval_recall@{recall_k}"] = batched_image_retrieval_recall.float().mean().item()
+        metrics[f"fractional_text_retrieval_recall@{recall_k}"] = batched_text_retrieval_recall.float().mean().item()
+        metrics[f"standard_image_retrieval_recall@{recall_k}"] = (batched_image_retrieval_recall>0).float().mean().item()
+        metrics[f"standard_text_retrieval_recall@{recall_k}"] = (batched_text_retrieval_recall>0).float().mean().item()
 
     return metrics
 
