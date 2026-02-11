@@ -11,8 +11,7 @@ from itertools import product
 import torch
 from torchvision.transforms import Compose
 from open_clip.transform import MaybeConvertMode
-from torchvision.transforms.v2 import ToTensor
-
+from torchvision.transforms.v2 import ToTensor, Resize, InterpolationMode
 
 from clip_benchmark.datasets.builder import (build_dataset, dataset_collection,
                                              get_dataset_collate_fn,
@@ -275,7 +274,7 @@ def run(args):
             transform = Compose(
             [
                 MaybeConvertMode(),
-                torchvision.transforms.v2.Resize(size=(224, 224), interpolation = torchvision.transforms.v2.InterpolationMode.BICUBIC, antialias=True),
+                Resize(size=(224, 224), interpolation = InterpolationMode.BICUBIC, antialias=True),
                 ToTensor()
 
             ]
