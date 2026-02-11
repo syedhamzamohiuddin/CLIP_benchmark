@@ -9,6 +9,7 @@ from copy import copy
 from itertools import product
 
 import torch
+from torchvision.transforms import Compose
 
 from clip_benchmark.datasets.builder import (build_dataset, dataset_collection,
                                              get_dataset_collate_fn,
