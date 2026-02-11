@@ -66,6 +66,9 @@ def get_parser_args():
     parser_eval.add_argument('--skip_existing', default=False, action="store_true", help="whether to skip an evaluation if the output file exists.")
     parser_eval.add_argument('--model_type', default="open_clip", type=str, choices=MODEL_TYPES, help="clip model type")
     parser_eval.add_argument('--wds_cache_dir', default=None, type=str, help="optional cache directory for webdataset only")
+
+    parser_eval.add_argument('--task1_preprocess', action='store_true', help='Trigger special preprocessing for task 1')
+
     parser_eval.set_defaults(which='eval')
 
     parser_build = subparsers.add_parser('build', help='Build CSV from evaluations')
@@ -262,6 +265,17 @@ def run(args):
             from clip_benchmark.models.nllb_clip import set_language
 
             set_language(tokenizer, args.language)
+
+        if args.task1_preprocess:
+            print("enforcing lpcv task 1 transform")
+            transform = Compose(
+            [
+                MaybeConvertMode(),
+                torchvision.transforms.v2.Resize(size=(224, 224), interpolation = torchvision.transforms.v2.InterpolationMode.BICUBIC, antialias=True),
+                ToTensor()
+
+            ]
+)
         dataset = build_dataset(
             dataset_name=args.dataset, 
             root=dataset_root, 
